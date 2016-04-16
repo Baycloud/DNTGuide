@@ -157,11 +157,11 @@
             An origin server that receives a valid GET request targeting its site-wide tracking status resource must send either a successful response containing a machine-readable representation of the site-wide tracking status, as defined below, or a sequence of redirects that leads to such a representation. Failure to provide access to such a representation implies that the target origin server does not implement this protocol.
         </blockquote>
         <p>
-            Other than the <code>tracking</code> property the other properties in the <dfn>TSR</dfn> are usually optional, but it makes little sense not to always return a <code>policy</code> property pointing to content which explains the relevant
-            tracking behaviour and, in Europe, how browser storage is used.
+            A valid <dfn>TSR</dfn> must have a <code>tracking</code> property and a <code>compliance</code> property.
+            It makes little sense for it not to also have <code>policy</code> and <code>controller</code> properties. 
         </p>
         <p>
-            If out-of-band consent is indicated (with the <code>Tk: C</code> response header) a <code>config</code> property must be present in the <dfn>TSR</dfn>.
+            If out-of-band consent is indicated (with the <code>Tk: C</code> response header) a <code>config</code> property must also be present.
         </p>
         <section>
             <h2>The <code>tracking</code> string</h2>
@@ -178,12 +178,15 @@
                 If a site always tracks users, irrespective of the <dfn>DNT</dfn> header value but for a "permitted purpose",
                 it should set the value to <code>T</code> and set the <code>qualifiers</code> property to one or more of the values
                 <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html#qualifiers">described</a> for each purpose.
-                In Europe this may not be necessary if tracking, (or more accurately browser storage used to enable tracking i.e. a UID cookie), is solely used "to fulfil a purpose requested by the user".
-                It may still be a good idea to return a T response with say an <code>n</code> (for "strictly <strong>n</strong>ecessary") in the <dfn>TSR</dfn> <code>Qualifier</code> property, because
+                In Europe this may not be necessary if tracking, (or more accurately browser storage used to enable tracking i.e. a UID cookie),
+                is "strictly necessary to fulfil a purpose requested by the user" or "solely used for the purpose of carrying out the transmission of a communication".
+                It may still be a good idea to return a <code>Tk: T</code> header with say an <code>n</code> (for "strictly <strong>n</strong>ecessary"),
+                or  a <code>t</code> (for "solely used for the purpose of carrying out the transmission of a communication") in the <dfn>TSR</dfn> <code>qualifier</code> property, because
                 browsers or extension may use an unqualified <code>Tk: T</code> an indication of a non DNT compliant servers.
             </p>
             <p>
-                A <code>tracking</code> property value of <code>D</code> or a value of <code>T</code> without a valid <code>qualifier</code> value when the requesting headers contained <code>DNT: 1</code> signifies non-compliance with DNT.
+                A <code>tracking</code> property value of <code>D</code> or a value of <code>T</code> without a valid <code>qualifier</code> value
+                when the requesting headers contained <code>DNT: 1</code> signifies purposeful non-compliance with DNT.
                 This may be useful as a valid response to force browsers and/or extensions to block specific third-parties for debugging or security purposes.
             </p>
             <p>
@@ -193,6 +196,56 @@
             </p>
             <p>
                 Other values for the TSV may be possible, in more complex situations, and if local law allows them.
+            </p>
+        </section>
+        <section>
+            <h2>The <code>compliance</code> array</h2>
+            <p>
+                This is an array of strings representing URI references to documents describing the specific data protection or privacy regimes that the site complies with.
+                It at least should contain a reference to the W3C's
+                <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">Tracking Compliance and Scope document http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html</a>
+                Other possibilities are the <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">2009 ePrivacy Directive http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html</a>, 
+            </p>
+
+        </section>        
+        <section>
+            <h2>The <code>policy</code> URI</h2>
+            <p>
+                This should point to a document describing the purposes of tracking and the mechanisms used to implement it.
+                In Europe this should also include what browser storage is used and the purposes for its use, and
+                if storage is used for purposes for which consent is not needed, that should also be explained.
+            </p>
+
+        </section>
+        <section>
+            <h2>The <code>config</code> URI</h2>
+            <p>
+                This should point to a page or resource where the user can opt-in or opt-out of tracking.
+                It may offer other services such as showing what personal data has already been collected for the user, and giving them the ability to amend or delete it.
+            </p>
+            <p>
+                If a request to a resource results in a change to the tracking state, i.e. an opt-in or an opt-out, then the response can include a <code>Tk: U</code> header.
+                This is the only situation that the <code>U</code>TSV can be returned, and is there to tell the browser to obtain an updated <dfn>TSR</dfn>.
+                This is only an option, and will probably be much easier to return a <code>T</code> to an opt-in and a <code>N</code> to an opt-out.
+            </p>
+            <p>
+                If out-of-band consent is used i.e. a TSV of <code>C</code>, the <code>config</code> property must exist.
+            </p>
+        </section>
+
+        <section>
+            <h2>The <code>Controller</code> array</h2>
+            <p>
+                It is a requirement in Europe that every Data Controller identifies itself, and the <code>Controller</code> property is designed for this.
+                Because there may be more than one company responsible for a particular resource, for example a hosting provider and their customer,
+                this is an array of string values representing URIs of resources describing the responsible data controller(s).
+                Each URI points to page where the data controller can be identified, for example a link to an "About" page may suffice.
+            </p>
+            <h2>The <code>same-party</code> array</h2>
+            <p>
+                A site can declare other host domains that it manages by adding them to the <code>same-party</code> array.
+                This indicates to browsers etc. which external resource references are actually first-party rather than third-party. AdBlockers and the like could use this an indication
+                that they should not block the other first-party domains, even if behavour such as "cookie syncing" has been detected.
             </p>
         </section>
         <section>
@@ -287,40 +340,6 @@
                 </table>
             </p>
         </section>
-        <section>
-            <h2>The <code>policy</code> URI</h2>
-            <p>
-                This should point to a document describing the purposes of tracking and the mechanisms used to implement it.
-                In Europe this should also include what browser storage is used and the purposes for its use, and
-                if storage is used for purposes for which consent is not needed, that should also be explained.
-            </p>
-
-        </section>
-        <section>
-            <h2>The <code>config</code> URI</h2>
-            <p>
-                This should point to a page or resource where the user can opt-in or opt-out of tracking.
-                It may offer other services such as showing what personal data has already been collected for the user, and giving them the ability to amend or delete it.
-            </p>
-            <p>
-                If out-of-band consent is used i.e. a TSV of <code>C</code>, the <code>config</code> property must exist.
-            </p>
-        </section>
-        <section>
-            <h2>The <code>Controller</code> array</h2>
-            <p>
-                It is a requirement in Europe that every Data Controller identifies itself, and the <code>Controller</code> property is designed for this.
-                Because there may be more than one company responsible for a particular resource, for example a hosting provider and their customer,
-                this is an array of string values representing URIs of resources describing the responsible data controller(s).
-                Each URI points to page where the data controller can be identified, for example a link to an "About" page may suffice.
-            </p>
-            <h2>The <code>same-party</code> array</h2>
-            <p>
-                A site can declare other host domains that it manages by adding them to the <code>same-party</code> array.
-                This indicates to browsers etc. which external resource references are actually first-party rather than third-party. AdBlockers and the like could use this an indication
-                that they should not block the other first-party domains, even if behavour such as "cookie syncing" has been detected.
-            </p>
-        </section>
     </section>
      <section>
         <h1>
@@ -348,44 +367,39 @@
     <section>
         <h1>Out-of-band consent and caching</h1>
         <p>
-            Until the Consent API has better support in browsers, the only way for a site to indicate it has been given consent is to use the out-of-band consent mechanisms. 
+            Until the Consent API has better support in browsers, the only way for a site to indicate it has been given consent is to use the out-of-band consent mechanisms.
             It is important to do this because browser extensions that try to stop tracking may take tracking behaviour in the context of a <code>DNT:1</code> request as refusal to respect the signal.
             This could result in the site or third-party being blocked unnecessarily.
         </p>
         <p>
-            The TPE calls for the return of a TSV of <code>C</code> to indicate OOBC but there is a problem with this. 
-            If the existence of OOBC relies on a UID cookie, say for example if the user has given their consent for tracking when they logged in 
-            which resulted in them receiving an authentication cookie, it would be impossible for the server to use caching. 
-            Caching would have to use the <code>Vary</code> header to take cookie headers into account, 
-            which would result in every request having to be responded to dynamically, there being no way to use the Vary header on a particular component
+            The TPE calls for the return of a TSV of <code>C</code> to indicate OOBC but take care with how caching has been implemented.
+            If the existence of OOBC relies on a UID cookie, say for example if the user has given their consent for tracking when they logged in
+            which resulted in them receiving an persistent and unique authentication cookie, it would be impossible for the server to use the expiration caching model.
+            Caching would have to use the <code>Vary</code> header to take cookie headers into account,
+            which would result in every request having to be responded to dynamically, there not being a way to use the Vary header on a particular component
             of the <code>Cookie</code> request header.
+            It would still be possible to use the Validation caching model however, with the <code>Tk: C</code> header indicating out-of-band consent
+            with a 304 "Not Modified" status code indicating a currently valid cache.
+            In this case an <code>ETag</code> response header value may need to encode the current value of the <dfn>DNT</dfn> header,
+            so that an invalid cache can be detected by examining the If-None-Match header in the request.
         </p>
         <p>
-            This is not a problem with the Consent API because the <code>DNT: 0</code> response can be cached (using <code>Vary: DNT</code>)
+            The expiration caching model can still be used with the Consent API because the <code>DNT: 0</code> response can be cached (using <code>Vary: DNT</code>)
         </p>
-        <p>The recommended way to deal with this issue is to use the Dynamic response <a target="_blank"https://www.w3.org/TR/tracking-dnt/#TSV-? href=""><code>Tk: ?status-id</code></a>
-        The OOBC signal can then be coded as a <code>C</code> value for the <dfn>TSR</dfn> <code>Tracking</code> property. Whenever a request to a designated resource results in a change to the OOBC status, 
-        the server must indicate this by replying with the "Updated" <code>Tk: U</code> response header.
+        <p>
+            Another way to deal with this issue is to use the Dynamic response <a target="_blank" https//www.w3.org/TR/tracking-dnt/#TSV-? href=""><code>Tk: ?status-id</code></a>
+            The OOBC signal can then be coded as a <code>C</code> value for the <dfn>TSR</dfn> <code>tracking</code> property. 
         </p>
-        <p>It is to be hoped that browsers will soon support the Consent API, making this convoluted requirement unnecessary.</p>
     </section>
     <section>
         <h1>Permitted uses, exemptions and alleviations.</h1>
         <p>
-            If the request is an opted-out one and no exemption or alleviation applies, then the tracking data must not be retained.
-            This means that UIDs in cookies should not be placed (and at least in Europe should be deleted if they are already there), JavaScript used for fingerprinting should not be
-            loaded, and any retained user identifying data (such as IP addresses) deleted or otherwise de-identified. If personal data must be collected for
-            one of the <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html#permitted-uses">permitted uses</a>,
-            or in Europe a use "strictly necessary to fulfil a service requested by the user" or for "the sole purpose of carrying out the transmission of a communication",
-            then the data can be retained, but only for the particular purpose. 
         </p>
     </section>
     <section>
         <h1>Compliance, Exemptions etc.</h1>
         <p>
-            If the request is for a third-party resource, i.e. it is designed to be accessed by a request for an embedded third-party element on another website, desist from collecting tracking data about this request.
-            If the request is for a first-party resource the action may be more complex because in some jurisdictions it may be OK to collect tracking data, 
-            but in all jurisdiction any tracking data collected must not be shared with a third-party who has not otherwise been given consent.
+
         </p>
     </section>
 </section>
