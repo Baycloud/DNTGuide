@@ -204,7 +204,10 @@
                 This is an array of strings representing URI references to documents describing the specific data protection or privacy regimes that the site complies with.
                 It at least should contain a reference to the W3C's
                 <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">Tracking Compliance and Scope document http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html</a>
-                Other possibilities are the <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">2009 ePrivacy Directive http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html</a>, 
+                Other possibilities are the <a target="_blank" href="http://baycloud.github.io/DNTGuide/recast_20091219_en.pdf">2002 (amended 2009) ePrivacy Directive 2009/136/EC</a>, 
+                the <a target="_blank" href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:31995L0046:en:HTML">1995 Data Protection Directive 95/46/EC</a>, 
+                the <a target="_blank" href="http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=consil:ST_5419_2016_INIT">2016 General Data Protection Regulation </a>,
+                and the <a target="_blank" href="https://www.eff.org/dnt-policy">EFF's DNT Policy</a>,
             </p>
 
         </section>        
@@ -225,7 +228,7 @@
             </p>
             <p>
                 If a request to a resource results in a change to the tracking state, i.e. an opt-in or an opt-out, then the response can include a <code>Tk: U</code> header.
-                This is the only situation that the <code>U</code>TSV can be returned, and is there to tell the browser to obtain an updated <dfn>TSR</dfn>.
+                This is the only situation that the <code>U</code> TSV can be returned, and is there to tell the browser to obtain an updated <dfn>TSR</dfn>.
                 This is only an option, and will probably be much easier to return a <code>T</code> to an opt-in and a <code>N</code> to an opt-out.
             </p>
             <p>
@@ -236,15 +239,17 @@
         <section>
             <h2>The <code>Controller</code> array</h2>
             <p>
-                It is a requirement in Europe that every Data Controller identifies itself, and the <code>Controller</code> property is designed for this.
+                It is a requirement in Europe that every Data Controller identifies itself before personal data are collected,
+                and the <code>Controller</code> property is designed for this.
                 Because there may be more than one company responsible for a particular resource, for example a hosting provider and their customer,
                 this is an array of string values representing URIs of resources describing the responsible data controller(s).
-                Each URI points to page where the data controller can be identified, for example a link to an "About" page may suffice.
+                Each URI points to page where the data controller can be clearly identified by the user, for example a link to an "About" page may suffice.
             </p>
             <h2>The <code>same-party</code> array</h2>
             <p>
                 A site can declare other host domains that it manages by adding them to the <code>same-party</code> array.
-                This indicates to browsers etc. which external resource references are actually first-party rather than third-party. AdBlockers and the like could use this an indication
+                This indicates to browsers etc. which external resource references are actually first-party rather than third-party.
+                AdBlockers and the like could use this as an indication
                 that they should not block the other first-party domains, even if behavour such as "cookie syncing" has been detected.
             </p>
         </section>
@@ -341,34 +346,11 @@
             </p>
         </section>
     </section>
-     <section>
-        <h1>
-            The <dfn data-dfn-type="dfn" id="dfn-tk">Tk</dfn> response header field
-        </h1>
-
-        <p>The origin server must indicate whether or not it is tracking the user, either by setting the <dfn>TSR</dfn> <code>tracking</code> property to one of the <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#tracking-status-value">Tracking Status Values</a>
-                    , or by returning the TSV in a <code>Tk</code> response header.</p>
-        <p>
-            <a href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#response-header-field">The <dfn data-dfn-type="dfn" id="dfn-tk">Tk</dfn> response header field</a>
-        </p>
-        <p>
-            The Tk response header field is a means for indicating the tracking status that applied to the corresponding request. An origin server is required to send a Tk header field if its site-wide tracking status value is ? (dynamic) or G (gateway), or when an interactive change is made to the tracking status and indicated by U (updated).
-        </p>
-        <p>
-            If an origin server has multiple, request-specific tracking policies, such that the tracking status might differ depending on some aspect of the request (e.g., method, target URI, header fields, data, etc.), the origin server can provide an additional subtree of well-known resources corresponding to each of those distinct tracking statuses. The status-id portion of the Tk field-value indicates which specific tracking status resource applies to the current request. The status-id is case-sensitive.
-        </p>
-        <p>
-            If a Tk field-value has a tracking status value of ? (dynamic), the origin server must send a status-id in the field-value.
-        </p>
-        <p>
-            When an origin server provides a mechanism via HTTP for establishing or modifying out-of-band tracking preferences, the origin server must indicate within the mechanism's response when a state-changing request has resulted in a change to the tracking status for that server. This indication of an interactive status change is accomplished by sending a Tk header field in the response with a tracking status value of U (updated).
-        </p>
-    </section>
     <section>
         <h1>Out-of-band consent and caching</h1>
         <p>
-            Until the Consent API has better support in browsers, the only way for a site to indicate it has been given consent is to use the out-of-band consent mechanisms.
-            It is important to do this because browser extensions that try to stop tracking may take tracking behaviour in the context of a <code>DNT:1</code> request as refusal to respect the signal.
+            Until the Consent API has wider support in browsers, the only compliant way for a site to indicate it has been given consent is to use the out-of-band consent (OOBC) mechanism.
+            It is important to do this because browser functionality designed to stop tracking may take tracking behaviour in the context of a <code>DNT:1</code> request as refusal to respect the signal.
             This could result in the site or third-party being blocked unnecessarily.
         </p>
         <p>
@@ -376,7 +358,7 @@
             If the existence of OOBC relies on a UID cookie, say for example if the user has given their consent for tracking when they logged in
             which resulted in them receiving an persistent and unique authentication cookie, it would be impossible for the server to use the expiration caching model.
             Caching would have to use the <code>Vary</code> header to take cookie headers into account,
-            which would result in every request having to be responded to dynamically, there not being a way to use the Vary header on a particular component
+            which would result in every request having to be responded to dynamically, there not being a way to use the Vary header for specific components
             of the <code>Cookie</code> request header.
             It would still be possible to use the Validation caching model however, with the <code>Tk: C</code> header indicating out-of-band consent
             with a 304 "Not Modified" status code indicating a currently valid cache.
@@ -394,10 +376,32 @@
     <section>
         <h1>Permitted uses, exemptions and alleviations.</h1>
         <p>
+            The W3C <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">Tracking Compliance and Scope</a> document
+            describes different tracking compliance processes for first-party resources, i.e. purposely visited websites, from requests for resources meant only for embedded
+            third-party access. If a first-party website receives a <code>DNT: 1</code> signal it can still collect and use tracking data but it must not share it with other parties
+            who have not been given user consent.
+
+        </p>
+        <p>
+            Even where EU law does not apply, the proscription of personal data sharing means that first-party sites must restrict their tracking activities
+            for <code>DNT: 1</code> requests.
+            It is not possible to know if embedded third-parties have obtained user consent, unless that consent had been facilitated by the first-party.
+            For other situations, especially when the DNT compliance procedures of the third-party are unknown, it may incumbent on the first-party not to
+            let the third-party be inserted.
+        </p>
+        <p>
+            One way to do this is to tell the browser only to load a restricted set of third-parties when DNT is set.
+            One recently standardised way is to insert a <a target="_blank" href="https://www.w3.org/TR/CSP2/">Content-Security-Policy</a> response header.
+            This header is supported by all the major browsers and
+            can deliver policy directives such as the list of external third-parties allowed to execute script.
+            As well as enabling sites to fully comply with DNT, this is also a great way to
+            improve the security of first-party sites by restricting the parties that can be loaded onto users' browsers in the site's context.
+            This technique could greatly diminish the ability of bad actors to insert malware.
+
         </p>
     </section>
     <section>
-        <h1>Compliance, Exemptions etc.</h1>
+        <h1>Using the Consent API</h1>
         <p>
 
         </p>
