@@ -1,0 +1,290 @@
+﻿<html lang="en" dir="ltr">
+<head>
+    <title>How sites comply with Do Not Track</title>
+    <meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+    <script src='http://www.w3.org/Tools/respec/respec-w3c-common' class='remove' async></script>
+    <script class='remove'>
+    var respecConfig = {
+      specStatus:          "base",
+      shortName:           "dnt-for-sites",
+      edDraftURI:          "http://www.w3.org/2011/tracking-protection/drafts/dnt-for-users.html",
+      editors:  [
+          { name: "Mike O'Neill",
+            company: "Baycloud Systems", companyURL: "http://www.baycloud.com/" }
+      ],
+      wg:          "Tracking Protection Working Group",
+      wgURI:       "http://www.w3.org/2011/tracking-protection/",
+      wgPublicList: "public-tracking",
+      wgPatentURI: "http://www.w3.org/2004/01/pp-impl/49311/status",
+      issueBase:   "http://www.w3.org/2011/tracking-protection/track/issues/",
+      noIDLSectionTitle: true
+    };
+    </script>
+</head>
+<body>
+<section id='body'>
+    <section>
+        <h1>Introduction</h1>
+        <p>
+            This is a guide to how sites can comply with Do Not Track (DNT).
+            It is based on experience with European e-Privacy compliance solutions designed to give users control over tracking,
+            and to use the DNT Consent API, where it is supported, to communicate explicit consent to third-parties.
+            It does not aim to be a complete guide to how all the DNT building blocks can be used, but tries to cover the minimum set needed to comply with European Data Protection law.
+            This may hopefully be useful elsewhere, such as sites or third-party resources that come under data protection regimes such as PrivacyShield.
+        </p>
+        <p>
+            The DNT header differs from other browser signals in that it can be cross-origin. Once a user has set their general preference not to be tracked,
+            the signal will be included in every HTTP request to websites, and to servers handling their embedded third-party elements. In addition the Java-script Consent API (also known as the Tracking Exception API),
+            can register a user's consent to particular or all embedded third-parties on a particular website, or to a particular third-party resource anywhere on the web.
+            This allows ePrivacy compliant websites to communicate user consent, when it is given, to embedded third-parties using standard browser signals.
+            Not all browsers currently support the Consent API so this functionality has had to be developed in a proprietary way (generally known as out-of-band consent) for non-compliant browsers.
+        </p>
+        <p>
+            DNT is not only about user control - respecting a user's tracking preference, but also transparency - presenting information about tracking behaviour in a standardised way.
+            If sites, or their embedded third-parties, do not communicate privacy practices that can be clearly understood and verified, users will continue to lose trust in them.
+            Browsers and browser extensions designed to enable tracking protection will also be able to use machine-readable tracking declarations to inform decisions on content blocking and other protective mechanisms.
+        </p>
+        <p>
+            DNT defines methods for declaring such things as the identity of the site's owner (in Europe the "Data Controller"),
+            its tracking policy (listing why tracking occurs and the purposes for which the collected personal data is used),
+            the compliance regime it operates under, the other host domains it controls, how consent can be given or revoked,
+            and how its tracking behaviour has been modified in the light of a specific tracking preference.
+            This is done in standardised machine-readable elements available to both first party and third-party servers.
+        </p>
+        <p>
+            Increasingly popular browser extensions, designed to give users control over non-consensual tracking or stop intrusive advertising,
+            can use this information to recognise when a user has given consent, when their expressed preference is being ignored,
+            or when embedded third-parties share the same data controller.
+            This will allow extension developers to make intelligent decisions about sites,
+            so that trustworthy sites and third-parties will not to have to have their content or functionality arbitrarily blocked.
+        </p>
+        <p>
+            If a site does use tracking it must determine, for any particular incoming HTTP request, whether a user has opted-in to being tracked or has opted-out from it.
+            For opted-out requests "tracking data" must not be stored, collected or retained unless certain exemptions or alleviations apply.
+            "Tracking data" means anything that be used to single-out the user, i.e. unique identifiers in cookies, IP addresses, derived unique identifiers such as browser fingerprints, etc.
+            The exemptions may differ depending on applicable local laws, and whether a particular request is being sent to a first-party or third-party server.
+        </p>
+        <p>
+            The default formal standard for sites that comply with Do Not Track is <a href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">available</a> from the W3C.
+            Other documents such as the EFF's Do Not Track Policy also exist, and it is expected that regulators in Europe and elsewhere will issue detailed guidance on the implications of DNT in their jurisdictions.
+        </p>
+    </section>
+    <section>
+        <h1>Implementing Do Not Track</h1>
+        <p>
+            Implementation can be broken down to 4 main functional areas.
+            <ol>
+                <li>
+                    The site must contain a reference to a Tracking Status Resource that can give user agents information about the site's tracking behaviour, if any.
+                </li>
+                <li>
+                    Unless the site does not ever track users, each incoming request should be checked to see if it contains a DNT header and whether it denotes an opt-out request (<code>DNT:1</code>)
+                    or an opted-in request (<code>DNT:0</code>). In certain jurisdictions, such as Europe,
+                    if no DNT header exists then the site must assume an opted-out user, in others the default may be an implied opted-in.
+                    It is also possible that the user has opted-in to tracking using another mechanism for giving explicit consent not described in the DNT protocol,
+                    referred to here and in other DNT documents as out-of-band consent.
+                </li>
+                <li>
+                    Action taken depending on the deemed tracking preference.
+                    <ul>
+                        <li>
+                            If the request signifies an opted-in user, tracking data can be used without restriction, although there may be implicit restrictions due to local law,
+                            or dependent on the information given to the user when they opted-in.
+                        </li>
+                        <li>
+                            If the request is an opted-out one and no exemption or alleviation applies, then the tracking data must not be retained.
+                            This normally means that UID cookies should not be placed (and, at least in Europe, should be deleted if they are already there),
+                            JavaScript used for fingerprinting should not be loaded, and any user identifying data in logs (such as IP addresses) deleted or otherwise permanently de-identified.
+                            If personal data must be collected for one of the <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html#permitted-uses">permitted uses</a> allowed by local laws,
+                            or in Europe is "strictly necessary to fulfil a service requested by the user" or for "the sole purpose of carrying out the transmission of a communication",
+                            then the data can be retained, but only for the particular claimed purpose.
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    A site's tracking behaviour in the context of a particular request should be indicated in the Tracking Status Value (TSV).
+                    The TSV can be communicated in various ways.
+                    <ul>
+                        <li>
+                            If its value never changes, i.e. does not depend on individual HTTP requests, it can  be recorded in the <code>Tracking</code> property of the <dfn>TSR</dfn>.
+                        </li>
+                        <li>
+                            If the value can change for individual requests then the <code>Tk</code> response header must be used. Either:
+                            <ul>
+                                <li>
+                                    The <code>Tracking</code> property can be set to <code>?</code> (<dfn>Dynamic</dfn>) and the TSV delivered in the value of the <code>Tk</code> response header, or:
+                                </li>
+                                <li>
+                                    A sub-tree of Tracking Status Resources can be maintained and the particular one that applies in the current request indicated using the
+                                    <a target="_blank" href="https://www.w3.org/TR/tracking-dnt/#referring-status-id">status-id</a> mechanism.
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+
+
+                </li>
+            </ol>
+        </p>
+    </section>
+    <section>
+        <h1>DNT detection via header detection or script</h1>
+        <p>
+            A site or web application can detect the DNT header value by either examining incoming request headers, or by loading JavaScript into a page or <code>iframe</code>
+            to read the <code>navigator.doNotTrack</code> property. 
+        </p>
+    </section>
+    <section>
+        <h1>
+            Tracking Status Resource
+        </h1>
+        <p>
+            A <a href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-resource">Tracking Status Resource</a> (TSR) must exist. For example if the origin host domain is origin.com then it responds to an HTTP GET
+            to <code>http://origin.com/.well-known/dnt/</code> with a <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-representation">properly formatted</a>
+            JSON object with the mime type <code>application/tracking-status+json</code>
+        </p>
+        <blockquote style="font-style:italic">
+            An origin server that receives a valid GET request targeting its site-wide tracking status resource must send either a successful response containing a machine-readable representation of the site-wide tracking status, as defined below, or a sequence of redirects that leads to such a representation. Failure to provide access to such a representation implies that the target origin server does not implement this protocol.
+        </blockquote>
+        <p>
+            Other than the <code>Tracking</code> property the other properties in the TSR are usually optional, but it makes little sense not to always return a <code>Policy</code> property pointing to content which explains the relevant
+            tracking behaviour and, in Europe, how browser storage is used.
+            If out-of-band consent is indicated (with the <code>Tk: C</code> response header) a <code>Config</code> property must be present.
+        </p>
+        <section>
+            <h2>The <code>Tracking</code> string</h2>
+            <p>
+                This contains the single character Tracking Status Value or TSV.
+            </p>
+            <blockquote style="font-style:italic">
+                A tracking status value (TSV) is a single character response to the user's tracking preference with regard to data collected via the designated resource. For a site-wide tracking status resource, the designated resource is any resource on the same origin server. For a Tk response header field, the target resource of the corresponding request is the designated resource, and remains so for any subsequent request-specific tracking status resource referred to by the Tk field value.
+            </blockquote>
+            <p>
+                If the site does not ever track or single out users it should set this to <code>N</code>.
+            </p>
+            <p>
+                If a site always tracks users, irrespective of the DNT header value but for a "permitted purpose",
+                it should set the value to <code>T</code> and set the <code>Qualifiers</code> property to one or more of the values
+                <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html#qualifiers">described</a> for each purpose.
+                In Europe this may not be necessary if tracking, or more accurately browser storage used to enable tracking i.e. a UID cookie, is solely used "to fulfil a purpose requested by the user".
+                It may still be a good idea to return a T response with say an <code>n</code> (for "strictly <strong>n</strong>ecessary") in the TSR <code>Qualifier</code> property, because
+                browsers or extension may use an unqualified <code>Tk: T</code> an indication of a non DNT compliant servers.
+            </p>
+            <p>
+                A <code>Tracking</code> property value of <code>T</code> without a valid <code>Qualifier</code> value when the requesting headers contained <code>DNT: 1</code> signifies non-compliance with DNT.
+                This may be useful as a valid response to force browsers and/or extensions to block specific third-parties for debugging or security purposes.
+            </p>
+            <p>
+                If tracking behaviour varies according to the value of the DNT header, then this status would be more easily returned in the <code>Tk</code> response header.
+                Alternatively the <a target="_blank" href="https://www.w3.org/TR/tracking-dnt/#referring-status-id">request specific TSR mechanism</a> can be used.
+                The clearest way to respond would be to include the header to <code>Tk:T</code> in responses to opted-in requests and <code>Tk:N</code> for opted-out requests.
+            </p>
+            <p>
+                Other values for the TSV may be possible, in more complex situations, and if local law allows them.
+            </p>
+        </section>
+        <section>
+            <h2>The <code>Qualifiers</code> string</h2>
+            <p>
+
+            </p>
+
+        </section>
+        <section>
+            <h2>The <code>Policy</code> URI</h2>
+            <p>
+
+            </p>
+
+        </section>
+        <section>
+            <h2>The <code>Config</code> URI</h2>
+            <p>
+
+            </p>
+
+        </section>
+        <section>
+        <h2>The <code>Controller</code> array</h2>
+        <p>
+            It is a requirement in Europe that every Data Controller identifies itself, and the <code>Controller</code> property is designed for this by pointing to a Url describing the site's owner,
+            for example a link to an "About" page may suffice.
+        </p>
+        <h2>The <code>same-party</code> array</h2>
+        <p>
+            A site can declare other host domains that it manages by adding them to the <code>same-party</code> array.
+            This indicates to browsers etc. which external resource references are actually first-party rather than third-party. AdBlockers and the like could use this an indication
+            that they should not block the other first-party domains, even if behavour such as "cookie syncing" has been detected.
+        </p>
+        </section>
+    </section>
+     <section>
+        <h1>
+            The <dfn data-dfn-type="dfn" id="dfn-tk">Tk</dfn> response header field
+        </h1>
+
+        <p>The origin server must indicate whether or not it is tracking the user, either by setting the TSR <code>tracking</code> property to one of the <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#tracking-status-value">Tracking Status Values</a>
+                    , or by returning the TSV in a <code>Tk</code> response header.</p>
+        <p>
+            <a href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#response-header-field">The <dfn data-dfn-type="dfn" id="dfn-tk">Tk</dfn> response header field</a>
+        </p>
+        <p>
+            The Tk response header field is a means for indicating the tracking status that applied to the corresponding request. An origin server is required to send a Tk header field if its site-wide tracking status value is ? (dynamic) or G (gateway), or when an interactive change is made to the tracking status and indicated by U (updated).
+        </p>
+        <p>
+            If an origin server has multiple, request-specific tracking policies, such that the tracking status might differ depending on some aspect of the request (e.g., method, target URI, header fields, data, etc.), the origin server can provide an additional subtree of well-known resources corresponding to each of those distinct tracking statuses. The status-id portion of the Tk field-value indicates which specific tracking status resource applies to the current request. The status-id is case-sensitive.
+        </p>
+        <p>
+            If a Tk field-value has a tracking status value of ? (dynamic), the origin server must send a status-id in the field-value.
+        </p>
+        <p>
+            When an origin server provides a mechanism via HTTP for establishing or modifying out-of-band tracking preferences, the origin server must indicate within the mechanism's response when a state-changing request has resulted in a change to the tracking status for that server. This indication of an interactive status change is accomplished by sending a Tk header field in the response with a tracking status value of U (updated).
+        </p>
+    </section>
+    <section>
+        <h1>Out-of-band consent and caching</h1>
+        <p>
+            Until the Consent API has better support in browsers, the only way for a site to indicate it has been given consent is to use the out-of-band consent mechanisms. 
+            It is important to do this because browser extensions that try to stop tracking may take tracking behaviour in the context of a <code>DNT:1</code> request as refusal to respect the signal.
+            This could result in the site or third-party being blocked unnecessarily.
+        </p>
+        <p>
+            The TPE calls for the return of a TSV of <code>C</code> to indicate OOBC but there is a problem with this. 
+            If the existence of OOBC relies on a UID cookie, say for example if the user has given their consent for tracking when they logged in 
+            which resulted in them receiving an authentication cookie, it would be impossible for the server to use caching. 
+            Caching would have to use the <code>Vary</code> header to take cookie headers into account, 
+            which would result in every request having to be responded to dynamically, there being no way to use the Vary header on a particular component
+            of the <code>Cookie</code> request header.
+        </p>
+        <p>
+            This is not a problem with the Consent API because the <code>DNT: 0</code> response can be cached (using <code>Vary: DNT</code>)
+        </p>
+        <p>The recommended way to deal with this issue is to use the Dynamic response <a target="_blank"https://www.w3.org/TR/tracking-dnt/#TSV-? href=""><code>Tk: ?status-id</code></a>
+        The OOBC signal can then be coded as a <code>C</code> value for the TSR <code>Tracking</code> property. Whenever a request to a designated resource results in a change to the OOBC status, 
+        the server must indicate this by replying with the "Updated" <code>Tk: U</code> response header.
+        </p>
+        <p>It is to be hoped that browsers will soon support the Consent API, making this convoluted requirement unnecessary.</p>
+    </section>
+    <section>
+        <h1>Permitted uses, exemptions and alleviations.</h1>
+        <p>
+            If the request is an opted-out one and no exemption or alleviation applies, then the tracking data must not be retained.
+            This means that UIDs in cookies should not be placed (and at least in Europe should be deleted if they are already there), JavaScript used for fingerprinting should not be
+            loaded, and any retained user identifying data (such as IP addresses) deleted or otherwise de-identified. If personal data must be collected for
+            one of the <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html#permitted-uses">permitted uses</a>,
+            or in Europe a use "strictly necessary to fulfil a service requested by the user" or for "the sole purpose of carrying out the transmission of a communication",
+            then the data can be retained, but only for the particular purpose. 
+        </p>
+    </section>
+    <section>
+        <h1>Compliance, Exemptions etc.</h1>
+        <p>
+            If the request is for a third-party resource, i.e. it is designed to be accessed by a request for an embedded third-party element on another website, desist from collecting tracking data about this request.
+            If the request is for a first-party resource the action may be more complex because in some jurisdictions it may be OK to collect tracking data, 
+            but in all jurisdiction any tracking data collected must not be shared with a third-party who has not otherwise been given consent.
+        </p>
+    </section>
+</section>
+</body>
+</html>
