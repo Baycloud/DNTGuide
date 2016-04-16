@@ -5,9 +5,9 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{B42E89C9-EC6E-4A44-B692-00184EAE2F9F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1EDA71A8-B96C-409B-89D1-64E155F016DE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CA7EC22-4015-4094-9633-62CAAF6C92C3}"
 	ProjectSection(SolutionItems) = preProject
-		ConsoleApplication1\index.html = ConsoleApplication1\index.html
+		..\index.html = ..\index.html
 	EndProjectSection
 EndProject
 Global
