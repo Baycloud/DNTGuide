@@ -73,6 +73,7 @@
         </p>
         <p>
             The default formal standard for sites that comply with Do Not Track is <a href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">available</a> from the W3C.
+            The formal standard for the technical aspects of Do Not Track is <a target="_blank" href="https://www.w3.org/TR/tracking-dnt/#exceptions">Tracking Preference Expression</a>.
             Other documents such as the EFF's Do Not Track Policy also exist, and it is expected that regulators in Europe and elsewhere will issue detailed guidance on the implications of DNT in their jurisdictions.
         </p>
     </section>
@@ -245,7 +246,7 @@
         <section>
             <h2>The <code>Controller</code> array</h2>
             <p>
-                It is a requirement in Europe that every Data Controller identifies itself before personal data are collected,
+                It is a requirement in Europe that every Data Controller identifies itself before personal data is collected,
                 and the <code>Controller</code> property is designed for this.
                 Because there may be more than one company responsible for a particular resource, for example a hosting provider and their customer,
                 this is an array of string values representing URIs of resources describing the responsible data controller(s).
@@ -368,8 +369,7 @@
             of the <code>Cookie</code> request header.
             It would still be possible to use the Validation caching model however, with the <code>Tk: C</code> header indicating out-of-band consent
             with a 304 "Not Modified" status code indicating a currently valid cache.
-            In this case an <code>ETag</code> response header value may need to encode the current value of the <code>DNT</code> header,
-            so that an invalid cache can be detected by examining the If-None-Match header in the request.
+
         </p>
         <p>
             The expiration caching model can still be used with the Consent API because the <code>DNT: 0</code> response can be cached (using <code>Vary: DNT</code>)
@@ -380,10 +380,10 @@
         </p>
     </section>
     <section>
-        <h1>Permitted uses, exemptions and alleviations.</h1>
+        <h1>Permitted uses, exemptions and derogations.</h1>
         <p>
             The W3C <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">Tracking Compliance and Scope</a> document
-            describes different tracking compliance processes for first-party resources, i.e. purposely visited websites, from requests for resources meant only for embedded
+            describes different tracking compliance processes for first-party resources, i.e. websites purposely visited by the user, from requests for resources meant only for embedded
             third-party access. If a first-party website receives a <code>DNT: 1</code> signal it can still collect and use tracking data but it must not share it with other parties
             who have not been given user consent.
 
@@ -393,16 +393,16 @@
             for <code>DNT: 1</code> requests.
             It is not possible to know if embedded third-parties have obtained user consent, unless that consent had been facilitated by the first-party.
             For other situations, especially when the DNT compliance procedures of the third-party are unknown, it may incumbent on the first-party not to
-            let the third-party be inserted.
+            insert third-parties who do not respect DNT.
         </p>
         <p>
-            One way to do this is to tell the browser only to load a restricted set of third-parties when DNT is set.
-            One recently standardised way is to insert a <a target="_blank" href="https://www.w3.org/TR/CSP2/">Content-Security-Policy</a> response header.
+            This contingent insertion of third-parties can be achieved using a technique such as tag management, configured to load a restricted set of third-parties when DNT is set.
+            Another recently standardised and open way is to insert a <a target="_blank" href="https://www.w3.org/TR/CSP2/">Content-Security-Policy</a> response header.
             This header is supported by all the major browsers and
-            can deliver policy directives such as the list of external third-parties allowed to execute script.
+            can deliver policy directives such as lists of external third-parties allowed to load for specified purposes.
             As well as enabling sites to fully comply with DNT, this is also a great way to
             improve the security of first-party sites by restricting the parties that can be loaded onto users' browsers in the site's context.
-            This technique could greatly diminish the ability of bad actors to insert malware.
+            This technique could greatly diminish the possibility of malware delivery to browsers.
 
         </p>
     </section>
@@ -420,21 +420,21 @@
         <p>
             As well as the top level domain, a site can register consent for its embedded third parties.
             This "site specific" consent tells the browser to send
-            <code>DNT: 0</code> headers whenever the third-parties are accessed as a result of loading the site's content.
+            <code>DNT: 0</code> headers when the third-parties are accessed as a result of loading the first-party site's content.
             Some implementations of the API can specify a subset of the site's third-parties (known as "targets" of the API), while others may apply the consent to all of them,
             called "site wide, site specific" consent.
         </p>
         <p>
-            A version of the API, called Web Wide consent, allows a site to specify that its origin, or a subdomain of its main origin, register consent
+            A version of the API, called <strong>Web Wide</strong> consent, allows a site to specify that its origin, or a subdomain of its main origin, register consent
             (i.e. <code>DNT:0 </code> is sent in requests to it) when it is accessed as a <strong>third-party</strong> on other sites.
         </p>
         <p>
             A detailed description of the Consent API can be found in the <a target="_blank" href="https://www.w3.org/TR/tracking-dnt/#exceptions">Tracking Preference Expression</a> document.
-            The following shows the the code for a simple situation where the user is presented with a form explaining the purposes of tracking,
+            The following shows the code for a simple situation where the user is presented with a form explaining the purposes of tracking,
             and asked to check a checkbox and click a Submit button if they agree.
         </p>
         <p>
-            If the checkbox is clicked when the user clicks the submit button, DNT consent is registered.
+            If the checkbox is clicked when the user clicks the submit button, consent to be tracked is registered.
             The consent applies to accesses to all the subdomains of the site's origin main domain,
             applies when third-parties "socialwidgit.com" and "thirdparty-analytics.com" are accessed in the context of the site,
             and will expire after 30 days. <code>DNT: 0</code> will be sent in subsequent requests to the specified origins until the consent is revoked or expires.
@@ -482,6 +482,8 @@
                 else
                 {
                     removeSiteSpecificTrackingException(dictionary);
+                    document.cookie = "UID=opted-out"; // stop tracking e.g. set unique identifier
+                                                       // cookies to a low entropy value
                 }
             });
         &lt;/script>
