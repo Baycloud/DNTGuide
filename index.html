@@ -475,7 +475,7 @@
             This contingent insertion of third-parties can be achieved using a technique such as tag management, configured to load a restricted set of third-parties when DNT is set.
             Another recently standardised and open way is to insert a <a target="_blank" href="https://www.w3.org/TR/CSP2/">Content-Security-Policy</a> response header.
             This header is supported by all the major browsers and
-            can deliver policy directives such as lists of external third-parties allowed to load for specified purposes.
+            can deliver policy directives such as lists of external origins allowed for particular mike types. If script attempts to lead resources not mentioned in the lists the browser will block them.
             As well as enabling sites to fully comply with DNT, this is also a great way to
             improve the security of first-party sites by restricting the parties that can be loaded onto users' browsers in the site's context.
             This technique could greatly diminish the possibility of malware delivery to browsers.
