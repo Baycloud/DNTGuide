@@ -26,9 +26,9 @@
             This is a guide to how sites can comply with Do Not Track (DNT).
             It is based on experience with European e-Privacy compliance solutions designed to give users control over tracking,
             and use the DNT Consent API, where it is supported, to communicate explicit consent to sites and their third-parties.
-            It does not aim to be a complete guide to how all the DNT building blocks can be used, but tries to cover the minimum set needed to comply with European Data Protection law.
+            It does not aim to be a complete guide to how all the DNT building blocks can be used, but tries to cover a set needed to comply with European Data Protection law.
             This may hopefully be useful elsewhere, such as sites or third-party resources under compatible data protection frameworks such as the EU-US PrivacyShield.
-            It may also help US companies supply the
+            It may also help US companies who want to supply the
             <a target="_blank" href="https://www.ftc.gov/news-events/blogs/business-blog/2016/04/keeping-online-advertising-industry?utm_source=govdelivery">control and transparency elements about tracking</a> recently called for by the FTC.
         </p>
     </section>
@@ -41,7 +41,7 @@
         <h1>Introduction</h1>
 
         <p>
-            The <code>DNT</code> header differs from other browser signals in that it can be cross-origin. Once a user has set their general preference not to be tracked,
+            The <code>DNT</code> header differs from others in that it can be used to signal to other domains, i.e. it is cross-origin. Once a user has set their general preference not to be tracked,
             the signal will be included in every HTTP request to websites, and to servers handling their embedded third-party elements.
             In addition the Java-script Consent API (also known as the Tracking Exception API),
             can register a user's consent to particular or all embedded third-parties on a particular website, or to a particular third-party resource anywhere on the web.
@@ -159,7 +159,8 @@
             Tracking Status Resource
         </h1>
         <p>
-            A <a href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-resource">Tracking Status Resource</a> (<abbr>TSR</abbr>) must exist. For example if the origin host domain is origin.com then it responds to an HTTP GET
+            A <a href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-resource">Tracking Status Resource</a> (<abbr>TSR</abbr>) must exist.
+            For example if a site's host domain is origin.com then the server should respond to an HTTP GET
             to <code>http://origin.com/.well-known/dnt/</code> with a <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-representation">properly formatted</a>
             JSON object with the mime type <code>application/tracking-status+json</code>
         </p>
@@ -168,7 +169,7 @@
         </blockquote>
         <p>
             A valid <abbr>TSR</abbr> must have a <code>tracking</code> property and a <code>compliance</code> property.
-            It makes little sense for it not to also have <code>policy</code> and <code>controller</code> properties. 
+            It makes little sense for it not to also have <code>policy</code> and <code>controller</code> properties.
         </p>
         <p>
             If out-of-band consent is indicated (with the <code>Tk: C</code> response header) a <code>config</code> property must also be present.
@@ -214,13 +215,13 @@
                 This is an array of strings representing URI references to documents describing the specific data protection or privacy regimes that the site complies with.
                 It at least should contain a reference to the W3C's
                 <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">Tracking Compliance and Scope document http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html</a>
-                Other possibilities are the <a target="_blank" href="http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136">2002 ePrivacy Directive amended by 2009/136/EC</a>, 
-                the <a target="_blank" href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:31995L0046:en:HTML">1995 Data Protection Directive 95/46/EC</a>, 
+                Other possibilities are the <a target="_blank" href="http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136">2002 ePrivacy Directive amended by 2009/136/EC</a>,
+                the <a target="_blank" href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:31995L0046:en:HTML">1995 Data Protection Directive 95/46/EC</a>,
                 the <a target="_blank" href="http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=consil:ST_5419_2016_INIT">2016 General Data Protection Regulation </a>,
                 and the <a target="_blank" href="https://www.eff.org/dnt-policy">EFF's DNT Policy</a>,
             </p>
 
-        </section>        
+        </section>
         <section>
             <h2>The <code>policy</code> URI</h2>
             <p>
