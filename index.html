@@ -369,7 +369,9 @@
                          "http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136"
                       ],
         "policy": "https://example1.com/privacy",
-        "controller": "[ https://example1.com/about ]",
+        "controller": [ 
+                          "https://example1.com/about" 
+                      ],
     }
     </pre>
             </p>
@@ -392,7 +394,9 @@
                       ],
         "qualifiers": "nt",
         "policy": "https://example2.com/privacy#purposes",
-        "controller": "[ https://example2.com/about ]",
+        "controller": [ 
+                          "https://example1.com/about" 
+                      ],
         "config": "https://example2.com/privacy/#give-or-revoke-consent"
     }
     </pre>
