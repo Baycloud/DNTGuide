@@ -481,13 +481,13 @@
             and asked to check a checkbox and click a Submit button if they agree.
         </p>
         <p>
-            If the checkbox is clicked when the user clicks the submit button, consent to be tracked is registered.
+            Consent for tracking is registered if the checkbox is checked when the user clicks the submit button.
             The consent applies to accesses to all the subdomains of the site's origin main domain,
             applies when third-parties "socialwidgit.com" and "thirdparty-analytics.com" are accessed in the context of the site,
-            and will expire after 30 days. <code>DNT: 0</code> will be sent in subsequent requests to the specified origins until the consent is revoked or expires.
+            and will expire after 30 days. <code>DNT: 0</code> will be sent in subsequent requests to the specified origins until the registered consent is revoked or expires.
         </p>
         <p>
-            If the checkbox is not checked when the user clicks the Submit button, the consent is revoked.
+            If the checkbox is not checked when the user clicks the Submit button, the registered consent is revoked.
         </p>
         <pre style="" class="example highlight prettyprint">
         &lt;form action="#" method="post" class="consentForm" id="consentForm">
