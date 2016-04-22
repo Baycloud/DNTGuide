@@ -26,7 +26,8 @@
             This is a guide to how sites can comply with Do Not Track (DNT).
             It is based on experience with European e-Privacy compliance solutions designed to give users control over tracking,
             and use the DNT Consent API, where it is supported, to communicate explicit consent to sites and their third-parties.
-            It does not aim to be a complete guide to how all the DNT building blocks can be used, but tries to cover a set needed to comply with European Data Protection law.
+            It does not aim to be a complete guide to how all the DNT building blocks can be used,
+            but tries to deal with those that can help meet the requirements of  European Data Protection law.
             This may hopefully be useful elsewhere, such as sites or third-party resources under compatible data protection frameworks such as the EU-US PrivacyShield.
             It may also help US companies who want to supply the
             <a target="_blank" href="https://www.ftc.gov/news-events/blogs/business-blog/2016/04/keeping-online-advertising-industry?utm_source=govdelivery">control and transparency elements about tracking</a> recently called for by the FTC.
@@ -50,7 +51,8 @@
         </p>
         <p>
             DNT is not only about user control - respecting a user's tracking preference, but also transparency - presenting information about tracking behaviour in a standardised way.
-            If sites, or their embedded third-parties, do not communicate privacy practices that can be clearly understood and verified, users will continue to lose trust in them.
+            If sites, or their embedded third-parties, do not communicate privacy practices that can be clearly understood and verified,
+            users will increasingly lose trust in them.
             Browsers and browser extensions designed to enable tracking protection will also be able to use machine-readable tracking declarations to inform decisions on
             content blocking and other privacy protective measures.
         </p>
@@ -69,7 +71,7 @@
             so that trustworthy sites and third-parties will not have to have their content or functionality arbitrarily blocked.
         </p>
         <p>
-            If a site does use tracking it must determine, for any particular incoming HTTP request, whether a user has opted-in to being tracked or has opted-out from it.
+            If a site does use tracking it must determine, for every incoming HTTP request, whether a user has opted-in to being tracked or has opted-out from it.
             For opted-out requests "tracking data" must not be stored, collected or retained unless certain exemptions or alleviations apply.
             "Tracking data" means anything that be used to single-out the user, i.e. unique identifiers in cookies, IP addresses, derived unique identifiers such as browser fingerprints, etc.
             The exemptions may differ depending on applicable local laws, and whether a particular request is being sent to a first-party or third-party server.
