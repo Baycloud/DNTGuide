@@ -162,7 +162,7 @@
             A <a href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-resource">Tracking Status Resource</a> (<abbr>TSR</abbr>) must exist.
             For example if a site's host domain is origin.com then the server should respond to an HTTP GET
             to <code>http://origin.com/.well-known/dnt/</code> with a <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-representation">properly formatted</a>
-            JSON object with the mime type <code>application/tracking-status+json</code>
+            JSON object. The response mime type should be <code>application/tracking-status+json</code>.
         </p>
         <blockquote style="font-style:italic">
             An origin server that receives a valid GET request targeting its site-wide tracking status resource must send either a successful response containing a machine-readable representation of the site-wide tracking status, as defined below, or a sequence of redirects that leads to such a representation. Failure to provide access to such a representation implies that the target origin server does not implement this protocol.
