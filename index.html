@@ -25,9 +25,10 @@
         <p>
             This is a guide to how sites can comply with Do Not Track (DNT).
             It is based on experience with European e-Privacy compliance solutions designed to give users control over tracking,
-            and use the DNT Consent API, where it is supported, to communicate explicit consent to certain third-parties.
+            and use the DNT Consent API, where it is supported, to communicate explicit consent to sites and their third-parties.
             It does not aim to be a complete guide to how all the DNT building blocks can be used, but tries to cover the minimum set needed to comply with European Data Protection law.
             This may hopefully be useful elsewhere, such as sites or third-party resources under compatible data protection frameworks such as the EU-US PrivacyShield.
+            It may also help US companies supply the <a target="_blank" href="https://www.ftc.gov/news-events/blogs/business-blog/2016/04/keeping-online-advertising-industry?utm_source=govdelivery">control and transparency elements about tracking</a> recently called for by the FTC.
         </p>
     </section>
     <section id="sotd">
@@ -40,7 +41,8 @@
 
         <p>
             The <code>DNT</code> header differs from other browser signals in that it can be cross-origin. Once a user has set their general preference not to be tracked,
-            the signal will be included in every HTTP request to websites, and to servers handling their embedded third-party elements. In addition the Java-script Consent API (also known as the Tracking Exception API),
+            the signal will be included in every HTTP request to websites, and to servers handling their embedded third-party elements.
+            In addition the Java-script Consent API (also known as the Tracking Exception API),
             can register a user's consent to particular or all embedded third-parties on a particular website, or to a particular third-party resource anywhere on the web.
             This allows ePrivacy compliant websites to communicate user consent, when it is given, to embedded third-parties using standard browser signals.
             Not all browsers currently support the Consent API so this functionality has had to be developed in a proprietary way (generally known as out-of-band consent) for non-compliant browsers.
@@ -483,7 +485,7 @@
                 {
                     removeSiteSpecificTrackingException(dictionary);
                     document.cookie = "UID=opted-out"; // stop tracking e.g. set unique identifier
-                                                       // cookies to a low entropy value
+                                                       // cookie to a low entropy value
                 }
             });
         &lt;/script>
