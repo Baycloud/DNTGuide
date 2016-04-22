@@ -248,7 +248,7 @@
         </section>
 
         <section>
-            <h2>The <code>Controller</code> array</h2>
+            <h2>The <code>controller</code> array</h2>
             <p>
                 It is a requirement in Europe that every Data Controller identifies itself before personal data is collected,
                 and the <code>Controller</code> property is designed for this.
@@ -356,6 +356,49 @@
                 </table>
             </p>
         </section>
+        <section>
+            <h2>TSR Examples</h2>
+            <p>
+                Here is an example of a TSR. The server for <code>example1.com</code> is declaring that it honours DNT, does not track users, the responsible company is identified
+                as well as the their  privacy policy and that they comply with the W3C Compliance and Scope document, as well as the EU's ePrivacy Directive.
+                <pre style="" class="example highlight prettyprint">
+    {
+        "tracking": "N",
+        "compliance": [
+                         "https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html",
+                         "http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136"
+                      ],
+        "policy": "https://example1.com/privacy",
+        "controller": "https://example1.com/about",
+    }
+    </pre>
+            </p>
+            <p>
+
+            </p>
+            <p>
+                This server for <code>example2.com</code> is declaring that it honours DNT, only identifies users to fulfil a user requested service and to implement load sharing,
+                also manages domains <code>img.example2.com</code> and <code>ourothersite.com</code>, and gives the page where consent can be given or revoked.
+                <pre style="" class="example highlight prettyprint">
+    {
+        "tracking": "T",
+        "same-party": [
+                        "img.example2.com",
+                        "ourothesite.com"
+                      ],
+        "compliance": [
+                         "https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html",
+                         "http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136"
+                      ],
+        "qualifiers": "nt",
+        "policy": "https://example2.com/privacy#purposes",
+        "controller": "https://example2.com/about",
+        "config": "https://example2.com/privacy/#give-or-revoke-consent"
+    }
+    </pre>
+            </p>
+        </section>
+
     </section>
     <section>
         <h1>Out-of-band consent and caching</h1>
