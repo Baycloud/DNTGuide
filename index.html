@@ -162,7 +162,9 @@
             A <a href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-resource">Tracking Status Resource</a> (<abbr>TSR</abbr>) must exist.
             For example if a site's host domain is origin.com then the server should respond to an HTTP GET
             to <code>http://origin.com/.well-known/dnt/</code> with a <a target="_blank" href="https://www.w3.org/2011/tracking-protection/drafts/tracking-dnt.html#status-representation">properly formatted</a>
-            JSON object. The response mime type should be <code>application/tracking-status+json</code>.
+            JSON object. The response mime type should be <code>application/tracking-status+json</code>. A <code>DNT</code> header will also be delivered in the HTTP request for a TSR,
+            so it would be a simple matter to return a different version dependant on the <code>DNT</code> value, i.e. <code>DNT:1</code> could result in TSR with <code>tracking</code>
+            set to <code>N</code>, while a request with <code>DNT: 0</code> could return <code>tracking</code> set to <code>T</code>.
         </p>
         <blockquote style="font-style:italic">
             An origin server that receives a valid GET request targeting its site-wide tracking status resource must send either a successful response containing a machine-readable representation of the site-wide tracking status, as defined below, or a sequence of redirects that leads to such a representation. Failure to provide access to such a representation implies that the target origin server does not implement this protocol.
@@ -379,8 +381,9 @@
 
             </p>
             <p>
-                This server for <code>example2.com</code> is declaring that it honours DNT, only identifies users to fulfil a user requested service and to implement load sharing,
+                This server for <code>example2.com</code> is declaring (when the TSR request contains <code>DNT: 1</code>) that it honours DNT, only identifies users to fulfil a user requested service and to implement load sharing,
                 also manages domains <code>img.example2.com</code> and <code>ourothersite.com</code>, and gives the page where consent can be given or revoked.
+
                 <pre style="" class="example highlight prettyprint">
     {
         "tracking": "T",
@@ -393,6 +396,26 @@
                          "http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136"
                       ],
         "qualifiers": "nt",
+        "policy": "https://example2.com/privacy#purposes",
+        "controller": [ 
+                          "https://example1.com/about" 
+                      ],
+        "config": "https://example2.com/privacy/#give-or-revoke-consent"
+    }
+    </pre>
+                If the request contains <code>DNT: 0</code> the TSR would not have a <code>qualifiers property</code>,
+                signifying tracking for more than one or more of the permitted purposes i.e.
+                <pre style="" class="example highlight prettyprint">
+    {
+        "tracking": "T",
+        "same-party": [
+                        "img.example2.com",
+                        "ourothesite.com"
+                      ],
+        "compliance": [
+                         "https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html",
+                         "http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136"
+                      ],
         "policy": "https://example2.com/privacy#purposes",
         "controller": [ 
                           "https://example1.com/about" 
