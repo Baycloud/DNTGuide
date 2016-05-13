@@ -47,7 +47,7 @@
 
         <p>
             The <code>DNT</code> header differs from others in that it can be used to signal to other domains, i.e. it is cross-origin. Once a user has set their general preference not to be tracked,
-            the signal will be included in every HTTP request to websites, and to servers handling their embedded third-party elements.
+            the signal will be included in every HTTP request to websites, as well as to all the servers handling their embedded third-party elements.
             In addition the Java-script Consent API (also known as the Tracking Exception API),
             can register a user's consent to particular or all embedded third-parties on a particular website, or to a particular third-party resource anywhere on the web.
             This allows ePrivacy compliant websites to communicate user consent, when it is given, to embedded third-parties using standard browser signals.
@@ -452,7 +452,7 @@
 
         </p>
         <p>
-            The expiration caching model can still be used with the Consent API because the <code>DNT: 0</code> response can be cached (using <code>Vary: DNT</code>)
+            The expiration caching model can still be used with the Consent API because the response to <code>DNT: 0</code> or <code>DNT: 1</code> can be cached (using <code>Vary: DNT</code>)
         </p>
         <p>
             Another way to deal with this issue is to use the Dynamic response <a target="_blank" https//www.w3.org/TR/tracking-dnt/#TSV-? href=""><code>Tk: ?status-id</code></a>
@@ -463,9 +463,9 @@
         <h1>Permitted uses, exemptions and derogations.</h1>
         <p>
             The W3C <a target="_blank" href="http://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html">Tracking Compliance and Scope</a> document
-            describes different tracking compliance processes for first-party resources, i.e. websites purposely visited by the user, from requests for resources meant only for embedded
-            third-party access. If a first-party website receives a <code>DNT: 1</code> signal it can still collect and use tracking data but it must not share it with other parties
-            who have not been given user consent.
+            describes different tracking compliance procedures for first-party resources, i.e. websites purposely visited by the user, from requests for resources meant only for embedded
+            third-party access. Under this regime a first-party website receiving a <code>DNT: 1</code> signal can still collect and use tracking data must not share it with other parties
+            who have not been given user consent, i.e. would not receive a <code>DNT: 0</code> header.
 
         </p>
         <p>
@@ -479,7 +479,7 @@
             This contingent insertion of third-parties can be achieved using a technique such as tag management, configured to load a restricted set of third-parties when DNT is set.
             Another recently standardised and open way is to insert a <a target="_blank" href="https://www.w3.org/TR/CSP2/">Content-Security-Policy</a> response header.
             This header is supported by all the major browsers and
-            can deliver policy directives such as lists of external origins allowed for particular mike types. If script attempts to lead resources not mentioned in the lists the browser will block them.
+            can deliver policy directives such as lists of external origins allowed for particular types. If script attempts to lead resources not mentioned in the lists the browser will block them.
             As well as enabling sites to fully comply with DNT, this is also a great way to
             improve the security of first-party sites by restricting the parties that can be loaded onto users' browsers in the site's context.
             This technique could greatly diminish the possibility of malware delivery to browsers.
