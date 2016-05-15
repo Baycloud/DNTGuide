@@ -202,7 +202,7 @@
                 is "strictly necessary to fulfil a purpose requested by the user" or "solely used for the purpose of carrying out the transmission of a communication".
                 It may still be a good idea to return a <code>Tk: T</code> header with say an <code>n</code> (for "strictly <strong>n</strong>ecessary"),
                 or  a <code>t</code> (for "solely used for the purpose of carrying out the transmission of a communication") in the <abbr>TSR</abbr> <code>qualifier</code> property, because
-                browsers or extension may use an unqualified <code>Tk: T</code> an indication of a non DNT compliant servers.
+                browsers or extension may use an unqualified <code>Tk: T</code> an indication of a non DNT compliant servers. 
             </p>
             <p>
                 A <code>tracking</code> property value of <code>D</code> (or a value of <code>T</code> without a valid <code>qualifier</code> value
@@ -398,8 +398,9 @@
 
             </p>
             <p>
-                This server for <code>example2.com</code> is declaring (when the TSR request contains <code>DNT: 1</code>) that it honours DNT, only identifies users to fulfil a user requested service and to implement load sharing,
-                also manages domains <code>img.example2.com</code> and <code>ourothersite.com</code>, and gives the page where consent can be given or revoked.
+                This server for <code>example2.com</code> is declaring (when the TSR request contains <code>DNT: 1</code>) that it honours DNT and
+                uses the <code>qualifiers</code> property to indicate it only identifies users to fulfil a user requested service and to implement load sharing.
+                The <code>same-party</code> property indicates it also manages domains <code>img.example2.com</code> and <code>ourothersite.com</code>, and gives the page where consent can be given or revoked.
 
                 <pre style="" class="example highlight prettyprint">
     {
@@ -420,8 +421,9 @@
         "config": "https://example2.com/privacy/#give-or-revoke-consent"
     }
     </pre>
-                If the request contains <code>DNT: 0</code> the TSR would not have a <code>qualifiers property</code>,
-                signifying tracking for more than one or more of the permitted purposes i.e.
+                If the request contains <code>DNT: 0</code>,indicating consent for tracking had been registered,
+                the<code>qualifiers property</code> can either be absent or contain a <code>o</code> signifying tracking is occurring for the explained purpose
+                in addition to one or more of the permitted purposes.
                 <pre style="" class="example highlight prettyprint">
     {
         "tracking": "T",
@@ -433,6 +435,7 @@
                          "https://www.w3.org/2011/tracking-protection/drafts/tracking-compliance.html",
                          "http://eur-lex.europa.eu/legal-content/en/ALL/?uri=CELEX:32009L0136"
                       ],
+        "qualifiers": "nto",
         "policy": "https://example2.com/privacy#purposes",
         "controller": [ 
                           "https://example1.com/about" 
