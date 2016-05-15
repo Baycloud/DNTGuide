@@ -462,7 +462,7 @@
             which would result in every request having to be responded to dynamically, there not being a way to use the Vary header for specific components
             of the <code>Cookie</code> request header.
             It would still be possible to use the Validation caching model however, with the <code>Tk: C</code> header indicating out-of-band consent
-            with a 304 "Not Modified" status code indicating a currently valid cache.
+            with a 304 "Not Modified" status code indicating a currently valid cache, though this would obviously still involve a round-trip delay.
 
         </p>
         <p>
