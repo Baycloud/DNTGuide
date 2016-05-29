@@ -146,7 +146,8 @@
                 </li>
                 <li>
                     If the site uses the user's consent to enable tracking then this can best be achieved by informing the user of the purpose and retention limits etc.,
-                    then, when they have given their consent by checking a box or clicking a button,  using the DNT Consent API to register the fact in the browser.
+                    then, when they have given their consent by checking a box or clicking a button, using the DNT Consent API to register the fact in the browser.
+                    The Consent API can be used at any time, even if the user has not enabled a general DNT preference, i.e. even when <a target="_blank" href="https://www.w3.org/TR/tracking-dnt/#user-interaction">DNT is unset</a>.
                     As the script API is not currently supported by some browsers an out-of-band technique, probably using cookies, can be used instead.
                     In this case a Tracking Status Value of C must be communicated in the <code>Tk</code> response header or in the <code>tracking</code> property of a request specific <abbr>TSR</abbr>.
                 </li>
@@ -506,6 +507,7 @@
             The Consent API, called the User-Granted Exception API in the other DNT documents, lets a site use JavaScript to register the user's consent to tracking in their browser, so that <code>DNT: 0</code>
             will be sent in future requests to the site's resources.
         </p>
+        <p>This can be actioned even if DNT is unset. in other words even if a user has not enabled a <a target="_blank" href="https://www.w3.org/TR/tracking-dnt/#user-interaction">general DNT preference</a>.</p>
         <p>
             The API is only available to script running in the top level browsing context, i.e. in the context of the first-party origin,
             but consent can also be obtained for accesses to subdomains of its origin's main domain.
