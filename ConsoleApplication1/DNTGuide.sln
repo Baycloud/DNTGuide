@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CA7EC22-4015-4094-9633-62CAAF6C92C3}"
 	ProjectSection(SolutionItems) = preProject
 		..\index.html = ..\index.html
+		rfc6265update.txt = rfc6265update.txt
 	EndProjectSection
 EndProject
 Global
